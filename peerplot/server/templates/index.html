@@ -1,0 +1,271 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!-- Consider adding a manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title></title>
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <!-- Mobile viewport optimized: j.mp/bplateviewport -->
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
+  <link rel="shortcut icon" href="static/favicon.ico" />
+
+  <link rel="stylesheet" type="text/css" href="static/style.css">	
+  <link rel="stylesheet" type="text/css" href="static/python.css">
+  <link rel="stylesheet" type="text/css" href="static/main.css">
+  <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
+
+  <!-- All JavaScript at the bottom, except this Modernizr build incl. Respond.js
+       Respond is a polyfill for min/max-width media queries. Modernizr enables HTML5 elements & feature detects; 
+       for optimal performance, create your own custom Modernizr build: www.modernizr.com/download/ -->
+  <script src="static/modernizr-2.0.6.min.js"></script>
+  
+  <script type="text/javascript">
+// <![CDATA[
+
+ 	function loadCanvas() {
+  		var canvas = document.getElementById("titleCanvas");
+  		var ctx = canvas.getContext("2d");
+  		
+  		ctx.fillStyle = "#11C7E8";
+  		ctx.beginPath();
+  		ctx.arc(118, 50, 10, 0, Math.PI*2, true);
+  		ctx.closePath();
+  		ctx.fill();
+  		
+  		ctx.fillStyle = "#FFFFFF";
+  		ctx.beginPath();
+  		ctx.arc(78,  28, 6, 0, Math.PI*2, true);
+  		ctx.arc(78,  71, 6, 0, Math.PI*2, true);
+  		ctx.arc(118,  7, 6, 0, Math.PI*2, true);
+  		ctx.arc(118, 93, 6, 0, Math.PI*2, true);
+  		ctx.arc(156, 28, 6, 0, Math.PI*2, true);
+  		ctx.arc(156, 71, 6, 0, Math.PI*2, true);
+  		ctx.closePath();
+  		ctx.fill();
+  		
+   		ctx.strokeStyle = "#FFFFFF";
+   		ctx.lineWidth = 2;
+  		ctx.beginPath(); 		
+  		ctx.moveTo(78, 28);
+  		ctx.lineTo(118-8, 50-4);
+  		
+   		ctx.moveTo(78, 71);
+  		ctx.lineTo(118-8, 50+5); 		
+  		
+    	        ctx.moveTo(118, 88);
+  		ctx.lineTo(118, 50+10);
+  		
+  	  	ctx.moveTo(156, 28);
+  		ctx.lineTo(118+8, 50-4);
+  		
+  		ctx.moveTo(156, 71);
+  		ctx.lineTo(118+8, 50+5);
+  		
+  		ctx.moveTo(118, 7);
+  		ctx.lineTo(118, 50-10);
+  			
+  		ctx.closePath();
+  		ctx.stroke();
+  	};
+  	
+// ]]>
+  </script>
+</head>
+
+<!--<body onload='loadCanvas(); return false;'> -->
+  <body>
+
+  <div id="container">
+    <header>
+
+    </header>
+        
+	<div id="main">
+    	
+      <div id="title"> 
+	<!-- Need a snazzy image for PeerPlot -->
+	<!--
+    <a class="titleLink" href="/"> <img src="img/main_title.png" alt="img/main_title.png"> </a>
+   -->
+    <canvas id="titleCanvas" width="235px" height="100px" style="top: 10px; position: absolute;"> </canvas>
+   
+   	<h1>PeerPlot</h1>
+   
+<!--
+	<a class="titleLink" href="/"> <img src="{{ static_url("main_title.png") }}"> </a>
+-->
+
+   	<!--
+        <a class="titleLink" href="/"> <img src="{{ static_url("peerplot_title.png") }}"> </a>
+	-->
+      </div>
+
+      <!-- Side bar placing and links. Refer to style.css under sideBar to see properties. -->
+      <div id="sideBar">
+
+		<p><a class="sideBar" href="/"> Home </a></p>
+
+		<p><a class="sideBar" href="/downloads/peerplot-0.0.3.tar.gz" onClick="javascript: _gaq.push(['_trackPageview', '/peerplot-0.0.3.tar.gz']);"> Download </a></p>
+
+		<p><a class="sideBar" href="/"> Documentation </a></p>
+		
+		<p><a class="sideBar" href="/"> Gallery </a></p>
+				
+		<p><a class="sideBar" href="/"> Install </a></p>
+
+ 		<p><a class="sideBar" href="/"> Report a bug </a></p>
+
+  		<p><a class="sideBar" href="/"> GitHub </a></p>
+
+      </div>
+
+      <div id="content">
+
+	<div align="center">
+		<img id="mainImage" width="498px" height="579px" src="static/example.png" alt="static/example.png"/>
+	</div>
+
+	<div id="imageSource">A generated plot using matplotlib and PeerPlot</div>
+
+	
+	<div id="textBox">
+
+	  <p class= "mainText">
+
+          </p>
+
+	      
+	      
+          <h3>PeerPlot Features</h3>
+
+          <ul>
+            <li>Make plots interactively or using scripts
+          </ul>
+
+          <p class="mainText">
+            To request features, please leave a request <a href="https://github.com/brefsdal/peerplot/issues">here</a>.
+          </p>
+
+          <h3>Getting Started</h3>
+
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">peerplot</span>
+<span class="n">peerplot</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="s">&#39;kI4Mh8&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="kn">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span> <span class="s">&#39;ro&#39;</span><span class="p">)</span>
+</pre></div>
+
+          <h3>Reporting problems</h3>
+
+          <p class="mainText">
+	   
+          </p>
+
+	  <!-- 
+          <h3>Source code</h3>
+
+          <p class="mainText">
+	   
+          </p>
+
+	  <p class="Code">
+            git clone git://github.com/aplpy/aplpy.git APLpy
+	  </p>
+	  -->
+	  
+          <p class="mainText">
+          </p>
+
+	</div>
+
+	<div id="crumb">
+          If you have any questions or comments <a class="mailto" href="mailto:brian.refsdal@gmail.com"> contact us</a>
+	</div>
+
+      </div>
+
+      <!-- Side bar placing and links. Refer to style.css under sideBar to see properties. -->
+      <div id="gendiv">
+           	
+       	<p id="rightsideBarText"> Get Started Now! </p>   	
+	
+	<form id="genform" action="generate" method="post" >
+	  <input id="gensubmit" type="submit" value="{{ _("Generate Session") }}" />
+          <input type="hidden" name="next" value="{{ request.path }}"/>
+          {{ xsrf_form_html() }}
+	</form>
+
+	<!--
+	<p class="sideBar">            
+          Mailing list:
+	</p>
+        <a href="http://groups.google.com/group/aplpy-announce">Subscribe</a>  
+        
+        <br>
+        <br>
+	-->
+        
+	<!--
+        <p class="sideBar">            
+          Twitter feed:
+        </p>
+        
+	<a href="https://twitter.com/PeerPlot"><img src="images/twitter-gray.png"></a>
+	-->
+	<br>
+	<br>
+
+	<br />
+    
+      </div>        
+    </div>
+
+    <footer>
+
+    </footer>
+  </div> <!--! end of #container -->
+
+
+  <!-- JavaScript at the bottom for fast page loading -->
+
+  <!-- Grab Google CDN's jQuery, with a protocol relative URL; fall back to local if offline -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.3/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="static/jquery-1.6.3.min.js"><\/script>')</script>
+
+
+  <!-- scripts concatenated and minified via build script -->
+  <script defer src="static/plugins.js"></script>
+  <!-- end scripts -->
+
+
+  <script>
+    var _gaq=[['_setAccount','UA-17768919-4'],['_trackPageview'],['_trackPageLoadTime']];
+    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+    s.parentNode.insertBefore(g,s)}(document,'script'));
+  </script>
+
+  <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you want to support IE 6.
+       chromium.org/developers/how-tos/chrome-frame-getting-started -->
+  <!--[if lt IE 7 ]>
+    <script defer src="//ajax.googleapis.com/ajax/libs/chrome-frame/1.0.3/CFInstall.min.js"></script>
+    <script defer>window.attachEvent('onload',function(){CFInstall.check({mode:'overlay'})})</script>
+  <![endif]-->
+
+</body>
+</html>
