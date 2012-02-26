@@ -1,5 +1,3 @@
-
-
 (function($) {
 
     // canvas dimenions are determined by height and width of placeholder <div>
@@ -71,12 +69,12 @@
                 }
 
                 document.getElementById('status').innerText = "Connecting to port " + port + "...";
-                
+
                 plotSocket.onopen = function(e) {
                     plotSocket.send("<hello args=''");
                 }
 
-                plotSocket.onmessage = function(e) { 
+                plotSocket.onmessage = function(e) {
                     document.getElementById('status').innerText = "Connected";
                     lastFrame = e.data;
                     drawFrame(ctx);
@@ -124,28 +122,31 @@
                 stopX = pageX;
                 stopY = pageY;
                 var zdiv = document.getElementById("zoom_div");
-                if (zdraw > -1 && ((stopX-startX)>5) && ((stopY-startY)>5)) {
+                //if (zdraw > -1 && ((stopX-startX)>5) && ((stopY-startY)>5)) {
+
+                // Support rotation in NW, SW, and NE directions
+                if (zdraw > -1) {
                     zoom(zdiv, zdraw);
                 }
                 else {
                     // not in zdraw (or zoomed areas less than 5x5) so normal click
-                    handle_click(e);
+                    handleClick(e);
                     zdiv.style.display = "none";
                 }
             }
             zdraw = -1;
             return false;
         }
-   
+
         $("#zoom_div").mousemove(function(event) { slideCanvas(event, this); });
-        $("#zoom_div").mouseup(function(event) { 
-            
+        $("#zoom_div").mouseup(function(event) {
+
             if ( event.which == 1 ) {
-                releaseCanvas(event, this); 
+                releaseCanvas(event, this);
             }
 
         });
-        
+
         $("#hb").click(function(event) { goHome(); });
         $("#hb").bind("ondragstart", function(event) { return false; });
 
@@ -167,15 +168,15 @@
         $("#plotDiv").bind("ondrop", function(event) { onDrop(event); });
         $("#plotDiv").mouseup(function(event) { releaseCanvas(event, this); });
 
-        function zoom(zdiv, axes) {     
+        function zoom(zdiv, axes) {
             var zoom_coords = axes +
                 "," +
-                (startX - plotCanvas.offsetLeft) + 
+                (startX - plotCanvas.offsetLeft) +
                 "," +
                 (canvasHeight - (stopY - plotCanvas.offsetTop)) +
                 "," +
                 (stopX - plotCanvas.offsetLeft) +
-                "," + 
+                "," +
                 (canvasHeight - (startY - plotCanvas.offsetTop));
 
             var zoom_or_rotate = $("#rotate").is(":checked") ? "rotate" : "zoom";
@@ -185,8 +186,6 @@
             zdiv.style.height = "0px";
             zdiv.style.display = "none";
         }
-
-     
 
         function clickCanvas(e, axes) {
             var pageX = getPageX(e);
@@ -207,7 +206,6 @@
             return false;
         }
 
-
         function clickMove(e) {
             var pageX = getPageX(e);
             var pageY = getPageY(e);
@@ -226,18 +224,18 @@
                 cursor_info = 0;
             }
         }
-        
+
         function closePlot() {
             if ($("#admin").length > 0) {
                 plotSocket.send("<close args=''>");
-                stop_plotting();
+                stopPlotting();
             }
         }
 
-        function stop_plotting() { 
+        function stopPlotting() {
 
             plotSocket.onmessage = function(e) {};
-            
+
             // reset the handler so that the buffer behind this socket does not polute new plots
             plotSocket.close();
             lastFrame = "var frame_header = false;";
@@ -263,7 +261,7 @@
             }
             return false;
         }
-        
+
         function slideSize(e) {
             var pageX = getPageX(e);
             var pageY = getPageY(e);
@@ -296,7 +294,7 @@
                 document.documentElement.clientWidth
             );
         };
-        
+
         function getDocHeight() {
             return Math.max(
                 $(document).height(),
@@ -304,30 +302,31 @@
                 document.documentElement.clientHeight
             );
         };
-        
+
         function maximize() {
             if ($("#admin").length > 0) {
-                var w = getDocWidth() * 0.98 - plotCanvas.offsetLeft; 
+                var w = getDocWidth() * 0.98 - plotCanvas.offsetLeft;
                 var h = getDocHeight() * 0.98 - plotCanvas.offsetTop - 20;
                 resize = 0;
-                do_resize(w, h);
+                doResize(w, h);
                 resize = -1;
             }
         }
-        
+
         function outSize() {
             if ($("#admin").length > 0 && resize > -1) {
                 var cr = document.getElementById('resize_div');
-                do_resize(cr.clientWidth, cr.clientHeight - 20);
+                doResize(cr.clientWidth, cr.clientHeight - 20);
                 cr.style.display = "none";
             }
             resize = -1;
             move = -1;
             zdraw = -1;
+            console.log('killed');
             // make sure we kill everything on mouse up
         }
 
-        function do_resize(w, h) {
+        function doResize(w, h) {
             if (resize > -1) {
                 try {
                     plotSocket.send("<resize args='" + w + "," + h + "'>");
@@ -349,30 +348,30 @@
                 //allow_resize = true;
             }
         }
-        
+
         function goHome() {
             if($("#admin").length > 0) {
                 plotSocket.send("<home args=''>");
             }
         }
 
-        function handle_click(e) {
+        function handleClick(e) {
             var pageX = getPageX(e);
             var pageY = getPageY(e);
 
             if ($("#admin").length > 0) {
-                plotSocket.send("<click args='" + 
+                plotSocket.send("<click args='" +
                                 (pageX - plotCanvas.offsetLeft) + "," +
                                 (canvasHeight - (pageY - plotCanvas.offsetTop)) + "," +
                                 (e.button + 1) + "'>");
             }
         }
-                
-        function onDragOver(e, div) { 
+
+        function onDragOver(e, div) {
             if (e.preventDefault) { e.preventDefault(); }
             div.className = 'over';
             e.dataTransfer.dropEffect = 'copy';
-            return false; 
+            return false;
         }
 
         function onDrop(e) {
@@ -384,12 +383,12 @@
             //var el_id = e.dataTransfer.getData('Text');
 
             // FIXME: stop plotting when canvas is resized??
-            //stop_plotting();
+            //stopPlotting();
             return false;
         }
 
         function makeLimitDiv(nid, i) {
-            var div = $('<div class="cursor" style="border: 2px solid grey;"></div>');
+            var div = $('<div class="cursor"></div>');
             div.attr('id', nid);
             div.mousemove(function (e) {slideCanvas(e, this);});
             div.mousedown(function (e) {
@@ -409,16 +408,16 @@
 
             ldiv = [];
             for (var i=0; i < ax_bb.length; i++) {
-                var nid = 'limit_div_' + i;  
+                var nid = 'limit_div_' + i;
                 for(var j=0; j < plotCanvas.childNodes.length; j++) {
                     var child = plotCanvas.childNodes[j];
                     if( child.id !== undefined && child.id == nid )
                         plotCanvas.removeChild(child);
                 }
-                
+
                 var ndiv = makeLimitDiv(nid, i);
                 ndiv.appendTo($("#plot_canvas"));
-                ldiv[i] = document.getElementById(nid); 
+                ldiv[i] = document.getElementById(nid);
                 ldiv[i].style.display = "inline";
                 ldiv[i].style.left = ax_bb[i][0] + "px";
                 ldiv[i].style.top = ax_bb[i][1] + "px";
@@ -435,7 +434,7 @@
                 frame_header();
             }
             //document.getElementById("info").innerHTML = ax_bb.toString();
-            
+
             updateLimitDiv(ax_bb);
       }
 
@@ -444,15 +443,15 @@
             c.className = cls;
             c.width = canvasWidth;
             c.height = canvasHeight;
-                    
+
             if (!skipPositioning)
-                $(c).css({ position: 'absolute', left: 0, top: 0 });
-                
+                $(c).css({ position: 'absolute', left: 0, top: 0, border: '1px solid gray' });
+
             $(c).appendTo(placeholder);
 
             // used for resetting in case we get replotted
             c.getContext("2d").save();
-            
+
             return c;
         }
 
@@ -477,7 +476,7 @@
         function getCanvasDimensions() {
             canvasWidth = placeholder.width();
             canvasHeight = placeholder.height();
-            
+
             if (canvasWidth <= 0 || canvasHeight <= 0)
                 throw "Invalid dimensions for plot, width = " + canvasWidth + ", height = " + canvasHeight;
         }
@@ -489,16 +488,16 @@
 
             if (existingCanvas.length == 0 || existingOverlay == 0) {
                 // init everything
-                
+
                 placeholder.html(""); // make sure placeholder is clear
-            
+
                 placeholder.css({ padding: 0 }); // padding messes up the positioning
-                
+
                 if (placeholder.css("position") == 'static')
                     placeholder.css("position", "relative"); // for positioning labels and overlay
 
                 getCanvasDimensions();
-                
+
                 canvas = makeCanvas(true, "base");
                 overlay = makeCanvas(false, "overlay"); // overlay canvas for interactive features
 
@@ -526,10 +525,10 @@
 
                 // reset reused canvases
                 plot.resize();
-                
+
                 // make sure overlay pixels are cleared (canvas is cleared when we redraw)
                 octx.clearRect(0, 0, canvasWidth, canvasHeight);
-                
+
                 // then whack any remaining obvious garbage left
                 eventHolder.unbind();
                 placeholder.children().not([canvas, overlay]).remove();
@@ -543,7 +542,7 @@
         // http://stackoverflow.com/questions/8208043/display-google-map-on-hover-link-or-text
         if (window.Event) {
             document.captureEvents(Event.MOUSEMOVE);
-        } 
+        }
         document.onmousemove = slideSize;
         document.addEventListener("onmousemove", slideSize, true);
     }

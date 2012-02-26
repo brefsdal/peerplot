@@ -3,7 +3,6 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>PeerPlot</title>
-
     <link rel="stylesheet" type="text/css" href="static/plot.css">
     <link rel="stylesheet" type="text/css" href="static/jquery-ui.css">
     <script src="static/jquery.min.js" type="text/javascript"></script>
@@ -11,7 +10,6 @@
     <script src="static/plot.js" type="text/javascript"></script>
     <script src="static/name.js" type="text/javascript"></script>
     <script src="static/connect.js" type="text/javascript"></script>
-
     <link rel="shortcut icon" href="{{ static_url("favicon.ico") }}" />
     <link rel="stylesheet" type="text/css" href="{{ static_url("plot.css") }}" >
     <link rel="stylesheet" type="text/css" href="{{ static_url("jquery-ui.css") }}" />
@@ -20,13 +18,12 @@
     <script type="text/javascript" src="{{ static_url("plot.js") }}"></script>
     <script type="text/javascript" src="{{ static_url("name.js") }}"></script>
     <script type="text/javascript" src="{{ static_url("connect.js") }}"></script>
-
- </head>
+  </head>
   <body id="plotBody">
-   <span id="title">
-    <h1>PeerPlot Session  {{ session }}</h1>
-   </span>
-<div id="clientlist" title="PeerPlot users for session '{{ session }}'"></div>
+    <span id="title">
+      <h1>PeerPlot Session  {{ session }}</h1>
+    </span>
+    <div id="clientlist" title="PeerPlot users for session '{{ session }}'"></div>
     <table width="75%" border='0' cellspacing='5px' cellpadding='0'>
       <tr>
         <td class="clienttd" width="33%" valign="top">
@@ -34,15 +31,8 @@
         </td>
       </tr>
     </table>
-    <br />
-    <br />
-    <br />
     <div id="info"> </div>
-<!--
-    <div id="startX"> </div>
-    <div id="startY"> </div>
--->
-    <div id="plot_canvas" style="position: absolute; top: 120px; left: 10px;">
+    <span id="plot_canvas" style="position: absolute; top: 120px; left: 10px;">
       <div id="plotDiv" style="width:640px;height:480px;"></div>
       <div id="button_menu" class="buttonmenu">
         <table width="100%" border='0' cellspacing='0' cellpadding='0'>
@@ -86,7 +76,7 @@
       </div>
       <div class="cursor" id="limit_div"></div>
       <div class="zoom" id="zoom_div"></div>
-    </div>        
+    </span>
     <div id="resize_div" class="resize" ></div>
     <div id="name-dialog" title="Join PeerPlot session {{ session }}">
       <p class="validateTips">Add your name to join.</p>

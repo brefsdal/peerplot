@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 import peerplot
 
-peerplot.init('brian', '192.168.1.4', '8080')
+#peerplot.init('brian', '192.168.1.4', '8080')
 #peerplot.init('brian')
+peerplot.init('brian', 'localhost', '8080')
 
 import matplotlib.cm as cm
 import matplotlib.mlab as mlab

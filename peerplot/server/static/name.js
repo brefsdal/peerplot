@@ -7,7 +7,6 @@
             this.name = $("#name");
             this.allFields = $([]).add(this.name);
             this.tips = $(".validateTips");
-
             $("#dialog:ui-dialog").dialog("destroy");
             this.setupDialog();
             this.addButtons();
@@ -16,12 +15,12 @@
         setupDialog: function () {
             $("#name-dialog").dialog({
                 autoOpen: false,
-		height: 300,
-		width: 350,
-		modal: true,
+                height: 300,
+                width: 350,
+                modal: true,
                 close: function () {
-		    NameDialog.allFields.val("").removeClass("ui-state-error");
-		}
+                    NameDialog.allFields.val("").removeClass("ui-state-error");
+                }
             });
         },
         addButtons: function () {
@@ -39,8 +38,8 @@
                     if (self.options.socket) {
                         self.options.socket.close();
                     }
-		    $(this).dialog("close");
-		}
+                    $(this).dialog("close");
+                }
             });
         },
         updateTips: function (t) {
@@ -52,30 +51,30 @@
         },
         checkLength: function (o, n, min, max) {
             if (o.val().length > max || o.val().length < min) {
-		o.addClass("ui-state-error");
-		this.updateTips("Length of " + n + " must be between " +
-			        min + " and " + max + ".");
-		return false;
-	    } else {
-		return true;
-	    }
+                o.addClass("ui-state-error");
+                this.updateTips("Length of " + n + " must be between " +
+                                min + " and " + max + ".");
+                return false;
+            } else {
+                return true;
+            }
         },
-	checkRegexp: function (o, regexp, n) {
-	    if (!( regexp.test(o.val()))) {
-		o.addClass("ui-state-error");
-		this.updateTips(n);
-		return false;
-	    } else {
-		return true;
-	    }
-	},
+        checkRegexp: function (o, regexp, n) {
+            if (!( regexp.test(o.val()))) {
+                o.addClass("ui-state-error");
+                this.updateTips(n);
+                return false;
+            } else {
+                return true;
+            }
+        },
         checkIfValid: function() {
             var bValid = true;
-            var errMsg = "Usernames must consist of a-z, 0-9, " + 
+            var errMsg = "Usernames must consist of a-z, 0-9, " +
                 "underscores, and must begin with a letter.";
-	    this.allFields.removeClass("ui-state-error");
-	    bValid = bValid && this.checkLength(this.name, "username", 3, 16);
-	    bValid = bValid && this.checkRegexp(this.name,
+            this.allFields.removeClass("ui-state-error");
+            bValid = bValid && this.checkLength(this.name, "username", 3, 16);
+            bValid = bValid && this.checkRegexp(this.name,
                          /^[a-z]([0-9a-z_])+$/i, errMsg);
             return bValid;
         }
@@ -91,10 +90,10 @@
         },
         setupDialog: function () {
             $("#clientlist").dialog({
-		autoOpen: false,
-		height: 300,
-		width: 350,
-		modal: false,
+                autoOpen: false,
+                height: 300,
+                width: 350,
+                modal: false,
                 close: function () {}
             });
         },
@@ -115,20 +114,17 @@
                         var msg = '{ "admin" : "' + $("#admin").val() + '"}';
                         self.options.socket.send(msg);
                         $("#clientlist").html("");
-	                $(this).dialog("close");
-                    }
-                    else {
-                        alert("myadmin: " + $("#admin").val() + ", socket: " + self.options.socket);
+                        $(this).dialog("close");
                     }
                 },
-                Close: function () { 
+                Close: function () {
                     $(this).dialog("close");
                 }
             });
         },
         addClientButtons: function () {
             $("#clientlist").dialog("option", "buttons", {
-                Close: function () { 
+                Close: function () {
                     $(this).dialog("close");
                 }
             });

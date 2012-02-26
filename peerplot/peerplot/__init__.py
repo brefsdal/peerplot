@@ -16,6 +16,7 @@ import matplotlib
 matplotlib.use('module://peerplot.backend_h5canvas')
 import backend_h5canvas
 
+__version__ = '0.0.6'
 __all__ = ('init',)
 
 def init(session_id='', host='peerplot.dce.harvard.edu', port='80'):

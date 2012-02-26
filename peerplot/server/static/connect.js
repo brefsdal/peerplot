@@ -7,14 +7,14 @@
                 port: 80,
                 session: "brian"
             }, options);
-            var addr = 'ws://' + 
+            var addr = 'ws://' +
                 this.options.host + ':' +
                 this.options.port + '/manager/' +
                 this.options.session;
             if (this.socket) {
                 this.socket.close();
             }
-            //this.socket = ("WebSocket" in window) ? new WebSocket(addr) : 
+            //this.socket = ("WebSocket" in window) ? new WebSocket(addr) :
             //    new MozWebSocket(addr);
             if ("WebSocket" in window) {
                 this.socket = new WebSocket(addr);
@@ -32,20 +32,16 @@
             socket.onmessage = function(e) {
                 var params = {};
                 var clients = [], admin = false, enabled = false;
-
                 if (e.data) {
                     params = JSON.parse(e.data);
-
                     if (params !== null) {
                         clients = params.clients || [];
                         admin = params.admin || false;
                         enabled = params.enabled || false;
                     }
-
                     if (enabled) {
                         $('<div id="admin"></div>').appendTo("#plot_canvas");
                     }
-
                     params = { clients: clients, admin: admin };
                     if (params.admin) {
                         $("#admin").remove();
@@ -67,9 +63,9 @@
             for (var ii = 0; ii < clients.length; ii++) {
                 var name = clients[ii].name;
                 var disabled = (clients[ii].admin !== undefined) ? "disabled='True'" : "";
-                // FIXME: make this a unique client key                
+                // FIXME: make this a unique client key
                 list += "<option value='" + ii + "' " + disabled + ">" +
-                    name + "</option>"; 
+                    name + "</option>";
             }
             list += "</select>";
             $("#clientlist").html(list);
