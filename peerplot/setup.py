@@ -18,7 +18,7 @@ from setuptools import setup
 
 setup (
     name = "peerplot",
-    version = "0.0.4",
+    version = "%VERSION%",
     description = "PeerPlot: Collaborative Plotting on the Cloud",
     url = "http://peerplot.com",
     author = "Brian Refsdal",
@@ -35,8 +35,4 @@ setup (
     packages = ['peerplot'],
     scripts = [],
     zip_safe = False,
-    #    data_files=[
-    #        ('examples', []),
-    #
-    #                ]
 )
