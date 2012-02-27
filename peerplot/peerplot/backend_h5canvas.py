@@ -310,7 +310,7 @@ class FigureCanvasH5Canvas(FigureCanvasBase):
         x0, x1 = self.figure.axes[ax].get_xlim()
         y0, y1 = self.figure.axes[ax].get_ylim()
 
-        # Reduce granularity by a factor of 10
+        # Reduce granularity by a factor of 2
         w = (x1-x0)*2.
         h = (y1-y0)*2.
 

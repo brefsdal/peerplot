@@ -20,43 +20,7 @@
         var ldiv = [], startX = 0, startY = 0, stopX = 0, stopY = 0, zdraw = -1, ztop = 0;
         var move = -1, resize = -1, rStartX = 0, rStartY = 0, mStartX = 0, mStartY = 0;
 
-        // Public functions
-        plot.getPlaceholder = function() { return placeholder; };
-        plot.getCanvas = function() { return canvas; };
-        plot.getPlotOffset = function() { return plotOffset; };
-        plot.width = function () { return plotWidth; };
-        plot.height = function () { return plotHeight; };
-        plot.offset = function () {
-            var o = eventHolder.offset();
-            o.left += plotOffset.left;
-            o.top += plotOffset.top;
-            return o;
-        };
-        plot.resize = function () {
-            getCanvasDimensions();
-            resizeCanvas(canvas);
-            resizeCanvas(overlay);
-        };
-
-        parseOptions(options);
-        setupCanvases();
-        resize_canvas(0, canvasWidth, canvasHeight);
-
-        $("#plotBody").mouseup(function (e) { outSize(); });
-
-        function parseOptions(options) {
-            if( options.host !== undefined )
-                host = options.host;
-            if( options.host !== undefined )
-                port = options.port;
-            if( options.host !== undefined )
-                session = options.session;
-            if( options.width !== undefined )
-                canvasWidth = options.width;
-            if( options.height !== undefined )
-                canvasHeight = options.height;
-        }
-
+        // Public function
         plot.plotInit = function () {
 
             if (!isPlotting) {
@@ -88,55 +52,13 @@
             }
         }
 
-        // This signature must be (id, width, height)!
-        // Called by payload
-        function resize_canvas(id, width, height) {
-            canvasWidth = width;
-            canvasHeight = height;
-            resizeCanvas(canvas);
-            resizeCanvas(overlay);
-            placeholder.width(width);
-            placeholder.height(height);
-            document.getElementById("button_menu").style.width = width + "px";
-        }
+        // Init
+        parseOptions(options);
+        setupCanvases();
+        resize_canvas(0, canvasWidth, canvasHeight);
 
-        function slideCanvas(e) {
-            var pageX = getPageX(e);
-            var pageY = getPageY(e);
-
-            if (!e) { var e = window.event; }
-            if (zdraw > -1)  {
-                var zdiv = document.getElementById("zoom_div");
-                zdiv.style.width = pageX - startX + "px";
-                zdiv.style.height = pageY - startY + "px";
-            }
-            document.getElementById('cursor_info').innerText = "Cursor at: " + pageX + "," + pageY;
-            return false;
-        }
-
-        function releaseCanvas(e, zdiv) {
-            var pageX = getPageX(e);
-            var pageY = getPageY(e);
-
-            if ($("#admin").length > 0) {
-                stopX = pageX;
-                stopY = pageY;
-                var zdiv = document.getElementById("zoom_div");
-                //if (zdraw > -1 && ((stopX-startX)>5) && ((stopY-startY)>5)) {
-
-                // Support rotation in NW, SW, and NE directions
-                if (zdraw > -1) {
-                    zoom(zdiv, zdraw);
-                }
-                else {
-                    // not in zdraw (or zoomed areas less than 5x5) so normal click
-                    handleClick(e);
-                    zdiv.style.display = "none";
-                }
-            }
-            zdraw = -1;
-            return false;
-        }
+        // Set up event callbacks
+        $("#plotBody").mouseup(function (e) { outSize(); });
 
         $("#zoom_div").mousemove(function(event) { slideCanvas(event, this); });
         $("#zoom_div").mouseup(function(event) {
@@ -168,6 +90,124 @@
         $("#plotDiv").bind("ondrop", function(event) { onDrop(event); });
         $("#plotDiv").mouseup(function(event) { releaseCanvas(event, this); });
 
+        // Private Functions
+
+        function parseOptions(options) {
+            if( options.host !== undefined )
+                host = options.host;
+            if( options.host !== undefined )
+                port = options.port;
+            if( options.host !== undefined )
+                session = options.session;
+            if( options.width !== undefined )
+                canvasWidth = options.width;
+            if( options.height !== undefined )
+                canvasHeight = options.height;
+        }
+
+        // This signature must be (id, width, height)!
+        // Called by payload
+        function resize_canvas(id, width, height) {
+            canvasWidth = width;
+            canvasHeight = height;
+            resizeCanvas(canvas);
+            resizeCanvas(overlay);
+            placeholder.width(width);
+            placeholder.height(height);
+            document.getElementById("button_menu").style.width = width + "px";
+        }
+
+        function slideCanvas(e) {
+            var pageX = getPageX(e);
+            var pageY = getPageY(e);
+            var xDelta = pageX - startX;
+            var yDelta = pageY - startY;
+
+            if (!e) { var e = window.event; }
+            if (zdraw > -1)  {
+                var zdiv = document.getElementById("zoom_div");
+                var offsetTop = (plotCanvas.offsetTop + plotCanvas.offsetParent.offsetTop);
+                var offsetLeft = (plotCanvas.offsetLeft + plotCanvas.offsetParent.offsetLeft);
+                var startYTop = (startY - offsetTop) + "px";
+                var startXLeft = (startX - offsetLeft) + "px";
+                var pageYTop = (pageY - offsetTop) + "px";
+                var pageXLeft = (pageX - offsetLeft) + "px";
+                // IV quad
+                if (xDelta > 0 && yDelta > 0) {
+                    //zdiv.style.top = (startY - (plotCanvas.offsetTop + plotCanvas.offsetParent.offsetTop)) + "px";
+                    //zdiv.style.left = (startX - (plotCanvas.offsetLeft + plotCanvas.offsetParent.offsetLeft)) + "px";
+                    zdiv.style.top = startYTop;
+                    zdiv.style.left = startXLeft;
+                }
+                // II quad
+                if (xDelta < 0 && yDelta < 0) {
+                    //zdiv.style.top = (pageY - (plotCanvas.offsetTop + plotCanvas.offsetParent.offsetTop)) + "px";
+                    //zdiv.style.left = (pageX - (plotCanvas.offsetLeft + plotCanvas.offsetParent.offsetLeft)) + "px";
+                    zdiv.style.top = pageYTop;
+                    zdiv.style.left = pageXLeft;
+                }
+                // I quad
+                if (xDelta > 0 && yDelta < 0) {
+                    //zdiv.style.top = (pageY - (plotCanvas.offsetTop + plotCanvas.offsetParent.offsetTop)) + "px";
+                    //zdiv.style.left = (startX - (plotCanvas.offsetLeft + plotCanvas.offsetParent.offsetLeft)) + "px";
+                    zdiv.style.top = pageYTop;
+                    zdiv.style.left = startXLeft;
+                }
+                // III quad
+                if (xDelta < 0 && yDelta > 0) {
+                    //zdiv.style.top = (startY - (plotCanvas.offsetTop + plotCanvas.offsetParent.offsetTop)) + "px";
+                    //zdiv.style.left = (pageX - (plotCanvas.offsetLeft + plotCanvas.offsetParent.offsetLeft)) + "px";
+                    zdiv.style.top = startYTop;
+                    zdiv.style.left = pageXLeft;
+                }
+                zdiv.style.width = Math.abs(xDelta) + "px";
+                zdiv.style.height = Math.abs(yDelta) + "px";
+            }
+
+            // If zooming
+            if ($("#zoom").is(":checked")) {
+                document.getElementById('cursor_info').innerText = "Cursor at: " + pageX + "," + pageY;
+            }
+            else {
+                if (startX != 0 && startY != 0) {  
+                    // Reduce granularity by a factor of 2.
+                    var w = canvasWidth * 2.;
+                    var h = canvasHeight * 2.;
+
+                    var elev_delta = (yDelta/h)*180.;
+                    var azim_delta = (xDelta/w)*180.;
+
+                    document.getElementById('cursor_info').innerText = "Delta (deg): " +
+                        azim_delta.toFixed(1) + ", " + elev_delta.toFixed(1);
+                }
+            }
+            return false;
+        }
+
+        function releaseCanvas(e, zdiv) {
+            var pageX = getPageX(e);
+            var pageY = getPageY(e);
+
+            if ($("#admin").length > 0) {
+                stopX = pageX;
+                stopY = pageY;
+                var zdiv = document.getElementById("zoom_div");
+ 
+                // Support rotation in NW, SW, and NE directions
+                if (zdraw > -1 && (Math.abs(stopX-startX)>2) && (Math.abs(stopY-startY)>2)) {
+                    zoom(zdiv, zdraw);
+                }
+                else {
+                    // not in zdraw (or zoomed areas less than 5x5) so normal click
+                    handleClick(e);
+                    zdiv.style.display = "none";
+                }
+                startX  = stopX = startY = stopY = 0;
+            }
+            zdraw = -1;
+            return false;
+        }
+
         function zoom(zdiv, axes) {
             var zoom_coords = axes +
                 "," +
@@ -179,9 +219,8 @@
                 "," +
                 (canvasHeight - (startY - plotCanvas.offsetTop));
 
-            var zoom_or_rotate = $("#rotate").is(":checked") ? "rotate" : "zoom";
+            var zoom_or_rotate = $("#zoom").is(":checked") ? "zoom" : "rotate";
             plotSocket.send("<" + zoom_or_rotate + " args='" + zoom_coords + "'>");
-            startX  = stopX = startY = stopY = 0;
             zdiv.style.width = "0px";
             zdiv.style.height = "0px";
             zdiv.style.display = "none";
@@ -200,9 +239,9 @@
                 zdiv.style.top = (pageY - (plotCanvas.offsetTop + plotCanvas.offsetParent.offsetTop)) + "px";
                 zdiv.style.left = (pageX - (plotCanvas.offsetLeft + plotCanvas.offsetParent.offsetLeft)) + "px";
                 zdiv.style.display = "inline";
+                startX = pageX;
+                startY = pageY;
             }
-            startX = pageX;
-            startY = pageY;
             return false;
         }
 
@@ -322,7 +361,6 @@
             resize = -1;
             move = -1;
             zdraw = -1;
-            console.log('killed');
             // make sure we kill everything on mouse up
         }
 
@@ -448,6 +486,9 @@
                 $(c).css({ position: 'absolute', left: 0, top: 0, border: '1px solid gray' });
 
             $(c).appendTo(placeholder);
+
+            if (!c.getContext) // excanvas hack
+                c = window.G_vmlCanvasManager.initElement(c);
 
             // used for resetting in case we get replotted
             c.getContext("2d").save();

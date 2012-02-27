@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import peerplot
-peerplot.init('brian')
+peerplot.init('brian', 'localhost', '8080')
 
 from mpl_toolkits.mplot3d import axes3d
 import matplotlib.pyplot as plt

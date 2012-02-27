@@ -2,7 +2,7 @@
 """
 PeerPlot - matplotlib on the cloud
 
-Copyright (c) 2011, Brian Refsdal (brian.refsdal@gmail.com)
+Copyright (c) 2012, Brian Refsdal (brian.refsdal@gmail.com)
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -13,7 +13,8 @@ Redistributions in binary form must reproduce the above copyright notice, this l
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 
-# Inspiration for this server came from the Tornado websocket demo
+# Inspiration for this server came from the Tornado websocket
+# and Eventlet websocket demos
 
 
 
@@ -38,6 +39,7 @@ from tornado.websocket import WebSocketHandler
 from tornado.web import RequestHandler, StaticFileHandler
 from tornado.options import define, options
 
+TOKEN_SIZE = 6
 HOST='peerplot.dce.harvard.edu'
 PORT=80
 SECRET=str(base64.b64encode(hashlib.sha256(str(random.random())).digest()))
@@ -45,11 +47,81 @@ SECRET=str(base64.b64encode(hashlib.sha256(str(random.random())).digest()))
 define("port", default=PORT, help="run on the given port", type=int)
 define("host", default=HOST, help="run on the given address", type=str)
 
+_tokens = string.ascii_letters + string.digits
+
+def generate_token():
+    return ''.join(random.sample(_tokens, TOKEN_SIZE))
+
+def parse_token(resource, path_info):
+    path = str(path_info).strip().strip('/')
+    return path.replace(resource, '').strip('/')
+
+def write_message(sock, message):
+    try:
+        sock.write_message(message)
+    except IOError:
+        logging.error("request '%s' closed" % str(sock.request.connection.address))
+    except socket.error, e:
+        logging.error("socket: " + str(e))
+    except Exception, e:
+        logging.error(str(type(e)) + str(e))
+        raise
+
+def update_user_list(session):
+    names = session.names
+    msg_temp = { 'clients': list(names) }
+    admin_msg = dict([('admin',True)])
+    admin_msg.update(msg_temp)
+    non_admin_msg = dict([('admin',False)])
+    non_admin_msg.update(msg_temp)
+
+    for manager in session.managers:
+        msg = non_admin_msg
+        if manager in session.admin:
+            msg = admin_msg
+        write_message(manager, json.dumps(msg))
+
+
+class Session(object):
+
+    def _get_names(self):
+        names = []
+        for connection in self.connections:
+            user = {}
+            if connection.isadmin:
+                user['admin'] = True
+            name = user['name'] = "%s:%i"%connection.address
+            if connection.name is not None:
+                name = connection.name
+            user['name'] = name
+            names.append(user)
+        return names
+
+    def _set_names(self):
+        raise NotImplementedError
+
+    names = property(_get_names, _set_names)
+
+    def __init__(self, hashid):
+        self.hashid = hashid
+        self.admin = set()
+        self.managers = []
+        self.browsers = set()
+        self.clients = set()
+        self.cache = ""
+        self.connections = []
+
+
+_sessions = { 'brian' : Session('brian'),
+              'chris' : Session('chris') }
+
+
 class Application(tornado.web.Application):
     def __init__(self):
         handlers = [
             (r"/", MainHandler),
-            (r"/downloads/(.*)", StaticFileHandler, {"path" : os.path.join(os.path.dirname(__file__), "downloads") }),
+            (r"/downloads/(.*)", StaticFileHandler,
+             {"path" : os.path.join(os.path.dirname(__file__), "downloads") }),
             (r"/generate", GenerateHandler),
             (r"/manager/.*", ManagerSocketHandler),
             (r"/api/.*", APISocketHandler),
@@ -64,48 +136,6 @@ class Application(tornado.web.Application):
             autoescape=None,
         )
         tornado.web.Application.__init__(self, handlers, **settings)
-
-
-
-def write_message(sock, message):
-    try:
-        # if type(message) not in (str,):
-        #     #print 'message...', str(message)
-        #     #message = "'%s'" % json.dumps(message, ensure_ascii=True)
-        #     message = json.dumps(message, ensure_ascii=True)
-
-        #     #print 'converting message...', message
-        #     #message = tornado.escape.utf8(message)
-        #     #print 'converted message', message, type(message), list(message)
-        #     #message = "clients=[];enabled=true;"
-
-        sock.write_message(message)
-    except IOError:
-        logging.error("request '%s' closed" % str(sock.request.connection.address))
-    except socket.error, e:
-        logging.error("socket: " + str(e))
-    except Exception, e:
-        logging.error(str(type(e)) + str(e))
-        raise
-
-
-def update_user_list(session):
-    names = session.names
-    # msg_temp = str('clients=' + json.dumps(names) + ';')
-    # admin_msg = msg_temp + 'admin=true;'
-    # non_admin_msg = msg_temp + 'admin=false;'
-
-    msg_temp = { 'clients': list(names) }
-    admin_msg = dict([('admin',True)])
-    admin_msg.update(msg_temp)
-    non_admin_msg = dict([('admin',False)])
-    non_admin_msg.update(msg_temp)
-
-    for manager in session.managers:
-        msg = non_admin_msg
-        if manager in session.admin:
-            msg = admin_msg
-        write_message(manager, json.dumps(msg))
 
 
 class ManagerSocketHandler(WebSocketHandler):
@@ -171,13 +201,11 @@ class ManagerSocketHandler(WebSocketHandler):
             return
         managers = session.managers
         admin = session.admin
-        #logging.info("loading JSON message: " + str(message))
         msg = json.loads(message)
 
         if msg.has_key("admin"):
             for master in admin:
                 write_message(master, json.dumps({"enabled": False}))
-                #write_message(master, "enabled=false;")
                 master.connection.isadmin = False
             admin.clear()
 
@@ -193,7 +221,6 @@ class ManagerSocketHandler(WebSocketHandler):
             admin.add(new_admin)
             new_admin.connection.isadmin = True
             write_message(new_admin, json.dumps({"enabled": True}))
-            #write_message(new_admin, "enabled=true;")
             logging.info("[%s] user '%s' is now the admin" % (session.hashid, str(connection.name)))
 
         elif msg.has_key("name"):
@@ -213,15 +240,12 @@ class APISocketHandler(WebSocketHandler):
         session = _sessions.get(token, None)
         return session
 
-
     def open(self):
         session = self.get_session()
         if session is None:
             return
         browsers = session.browsers
         browsers.add(self)
-        #logging.info("API-open browsers: " + str(browsers))
-
 
     def on_close(self):
         session = self.get_session()
@@ -229,7 +253,6 @@ class APISocketHandler(WebSocketHandler):
             return
         browsers = session.browsers
         browsers.remove(self)
-
 
     def on_message(self, message):
         session = self.get_session()
@@ -265,7 +288,6 @@ class ClientSocketHandler(WebSocketHandler):
         browsers = session.browsers
         write_message(self, "<hello args=''")
 
-
     def on_close(self):
         session = self.get_session()
         if session is None:
@@ -275,7 +297,6 @@ class ClientSocketHandler(WebSocketHandler):
             clients.remove(self)
         except:
             pass
-
 
     def on_message(self, message):
         session = self.get_session()
@@ -287,6 +308,7 @@ class ClientSocketHandler(WebSocketHandler):
             write_message(browser, message)
             logging.info("[%s] client message to %s" %
                          (session.hashid, str(browser.request.connection.address)))
+
 
 class SessionHandler(RequestHandler):
 
@@ -300,6 +322,7 @@ class SessionHandler(RequestHandler):
 
 
 class MainHandler(RequestHandler):
+
     def get(self):
         self.render("index.html")
 
@@ -314,17 +337,6 @@ class GenerateHandler(RequestHandler):
         url = 'http://' + options.host + ':' + str(options.port) + '/' + hashid
         self.redirect(url)
 
-_tokens = string.ascii_letters + string.digits
-TOKEN_SIZE = 6
-
-def generate_token():
-    return ''.join(random.sample(_tokens, TOKEN_SIZE))
-
-def parse_token(resource, path_info):
-    path = str(path_info).strip().strip('/')
-    return path.replace(resource, '').strip('/')
-
-
 
 class Connection(object):
 
@@ -334,41 +346,6 @@ class Connection(object):
         self.handler = None
         self.address = address
         self.isadmin = False
-
-
-class Session(object):
-
-    def _get_names(self):
-        names = []
-        for connection in self.connections:
-            user = {}
-            if connection.isadmin:
-                user['admin'] = True
-            name = user['name'] = "%s:%i"%connection.address
-            if connection.name is not None:
-                name = connection.name
-            user['name'] = name
-            names.append(user)
-        return names
-
-    def _set_names(self):
-        raise NotImplementedError
-
-    names = property(_get_names, _set_names)
-
-    def __init__(self, hashid):
-        self.hashid = hashid
-        self.admin = set()
-        self.managers = []
-        self.browsers = set()
-        self.clients = set()
-        self.cache = ""
-
-        self.connections = []
-
-_sessions = { 'brian' : Session('brian'),
-              'chris' : Session('chris') }
-
 
 
 def main():

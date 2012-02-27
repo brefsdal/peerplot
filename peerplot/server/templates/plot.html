@@ -24,50 +24,55 @@
       <h1>PeerPlot Session  {{ session }}</h1>
     </span>
     <div id="clientlist" title="PeerPlot users for session '{{ session }}'"></div>
-    <table width="75%" border='0' cellspacing='5px' cellpadding='0'>
+    <table class="client" cellspacing='5px' cellpadding='0'>
       <tr>
-        <td class="clienttd" width="33%" valign="top">
+        <td class="clienttd">
           <button id="list-users">Users</button>
         </td>
       </tr>
     </table>
     <div id="info"> </div>
-    <span id="plot_canvas" style="position: absolute; top: 120px; left: 10px;">
-      <div id="plotDiv" style="width:640px;height:480px;"></div>
-      <div id="button_menu" class="buttonmenu">
-        <table width="100%" border='0' cellspacing='0' cellpadding='0'>
-          <tr width="100%">
-            <td width="24" class="cb">
-              <img style="cursor: pointer;" id="cb" src="static/nav_cb_s.png"
+    <div id="plot_canvas" style="position: absolute; top: 120px; left: 10px;">
+      <div id="plotDiv" style="width:640px; height:480px;"></div>
+      <div id="button_menu">
+        <table class="menu" cellspacing='0' cellpadding='0'>
+          <tr>
+            <td class="cb">
+              <img id="cb" class="pointer" src="static/nav_cb_s.png"
                    onmouseover='$("#cb").attr("src", "static/nav_cb.png");'
                    onmouseout='$("#cb").attr("src", "static/nav_cb_s.png");' />
             </td>         
-            <td id="sm" width="65%" style="cursor: move;">
-              <span id="status" style="color: white;">Disconnected</span>
+            <td id="sm" class="move">
+              <span id="status" class="info">Disconnected</span>
             </td>
-            <td id="cm" width="35%" style="cursor: move;">
-              <span id="cursor_info" style="color: white;">Cursor</span>
+            <td id="cm" class="move">
+              <span id="cursor_info" class="info">Cursor</span>
             </td>
             <td>
-              <form>
-                  <input style="visibility:hidden;" type="checkbox" checked="" id="rotate"></input>
+              <form class="move">
+                  <input type="checkbox" checked="checked" id="zoom"></input>
               </form>
             </td>
-            <td width="24" class="ro">
-              <img id="ro" style="cursor: move;" src="{{ static_url("hand.png") }}" />
+            <td class="ro button">
+              <img id="ro" class="pointer" src="{{ static_url("zoom_to_rect.png") }}" />
             </td>
-            <td width="24" class="hb">
-              <img style="cursor: pointer;" id="hb" src="static/nav_hb_s.png"
+            <td class="hb button">
+              <img id="hb" class="pointer" src="{{ static_url("home.png") }}" />
+            </td>
+<!--
+            <td class="hb button">
+              <img class="pointer" id="hb" src="static/nav_hb_s.png"
                    onmouseover='$("#hb").attr("src", "static/nav_hb.png");'
                    onmouseout='$("#hb").attr("src", "static/nav_hb_s.png");' />
             </td>
-            <td width="24" class="mb">
-              <img style="cursor: pointer;" id="mb" src="static/nav_mb_s.png"
+-->
+            <td class="mb button">
+              <img class="pointer" id="mb" src="static/nav_mb_s.png"
                    onmouseover='$("#mb").attr("src", "static/nav_mb.png");'
                    onmouseout='$("#mb").attr("src", "static/nav_mb_s.png");' />
             </td>
-            <td id="rbb" width="24" class="rb">
-              <img border='0' style="cursor: se-resize;" id="rb" src="static/nav_rb_s.png"
+            <td id="rbb" class="rb button">
+              <img class="resize" id="rb" src="static/nav_rb_s.png"
                    onmouseover='$("#rb").attr("src", "static/nav_rb.png");'
                    onmouseout='$("#rb").attr("src", "static/nav_rb_s.png");' />
             </td>
@@ -76,7 +81,7 @@
       </div>
       <div class="cursor" id="limit_div"></div>
       <div class="zoom" id="zoom_div"></div>
-    </span>
+    </div>
     <div id="resize_div" class="resize" ></div>
     <div id="name-dialog" title="Join PeerPlot session {{ session }}">
       <p class="validateTips">Add your name to join.</p>
@@ -89,7 +94,6 @@
     </div>
 <script type="text/javascript">
 var plt = null;
-var ztop = 0;
 $(document).ready(function () {
     var options = {
         host : "{{ server_ip }}",
@@ -99,7 +103,6 @@ $(document).ready(function () {
         width : 640,
     }
     plt = $.plot($("#plotDiv"), options);
-    // TODO: add plt.requestPlot() to the onopen in ConnectionManager
     ConnectionManager.init(options);
     ClientDialog.init({ socket: ConnectionManager.socket });
     $("#list-users")
@@ -108,13 +111,13 @@ $(document).ready(function () {
             $("#clientlist").dialog("open");
         });
     $("#ro").click(function () {
-        if( $("#rotate").is(":checked") ) {
-            $(this).attr("src", "{{ static_url("zoom_to_rect.png") }}");
-            $("#rotate").attr("checked", false);
+        if( $("#zoom").is(":checked") ) {
+            $(this).attr("src", "{{ static_url("hand.png") }}");
+            $("#zoom").attr("checked", false);
         }
         else {
-            $(this).attr("src", "{{ static_url("hand.png") }}");
-            $("#rotate").attr("checked", true);
+            $(this).attr("src", "{{ static_url("zoom_to_rect.png") }}");
+            $("#zoom").attr("checked", true);
         }
     });
 });
