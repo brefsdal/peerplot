@@ -169,7 +169,7 @@
                 document.getElementById('cursor_info').innerText = "Cursor at: " + pageX + "," + pageY;
             }
             else {
-                if (startX != 0 && startY != 0) {  
+                if (startX != 0 && startY != 0) {
                     // Reduce granularity by a factor of 2.
                     var w = canvasWidth * 2.;
                     var h = canvasHeight * 2.;
@@ -192,7 +192,7 @@
                 stopX = pageX;
                 stopY = pageY;
                 var zdiv = document.getElementById("zoom_div");
- 
+
                 // Support rotation in NW, SW, and NE directions
                 if (zdraw > -1 && (Math.abs(stopX-startX)>2) && (Math.abs(stopY-startY)>2)) {
                     zoom(zdiv, zdraw);

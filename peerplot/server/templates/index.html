@@ -22,65 +22,65 @@
   <!-- Place favicon.ico and apple-touch-icon.png in the root directory: mathiasbynens.be/notes/touch-icons -->
   <link rel="shortcut icon" href="static/favicon.ico" />
 
-  <link rel="stylesheet" type="text/css" href="static/style.css">	
+  <link rel="stylesheet" type="text/css" href="static/style.css">
   <link rel="stylesheet" type="text/css" href="static/python.css">
   <link rel="stylesheet" type="text/css" href="static/main.css">
   <!-- More ideas for your <head> here: h5bp.com/d/head-Tips -->
 
   <!-- All JavaScript at the bottom, except this Modernizr build incl. Respond.js
-       Respond is a polyfill for min/max-width media queries. Modernizr enables HTML5 elements & feature detects; 
+       Respond is a polyfill for min/max-width media queries. Modernizr enables HTML5 elements & feature detects;
        for optimal performance, create your own custom Modernizr build: www.modernizr.com/download/ -->
   <script src="static/modernizr-2.0.6.min.js"></script>
-  
+
   <script type="text/javascript">
 // <![CDATA[
 
- 	function loadCanvas() {
-  		var canvas = document.getElementById("titleCanvas");
-  		var ctx = canvas.getContext("2d");
-  		
-  		ctx.fillStyle = "#11C7E8";
-  		ctx.beginPath();
-  		ctx.arc(118, 50, 10, 0, Math.PI*2, true);
-  		ctx.closePath();
-  		ctx.fill();
-  		
-  		ctx.fillStyle = "#FFFFFF";
-  		ctx.beginPath();
-  		ctx.arc(78,  28, 6, 0, Math.PI*2, true);
-  		ctx.arc(78,  71, 6, 0, Math.PI*2, true);
-  		ctx.arc(118,  7, 6, 0, Math.PI*2, true);
-  		ctx.arc(118, 93, 6, 0, Math.PI*2, true);
-  		ctx.arc(156, 28, 6, 0, Math.PI*2, true);
-  		ctx.arc(156, 71, 6, 0, Math.PI*2, true);
-  		ctx.closePath();
-  		ctx.fill();
-  		
-   		ctx.strokeStyle = "#FFFFFF";
-   		ctx.lineWidth = 2;
-  		ctx.beginPath(); 		
-  		ctx.moveTo(78, 28);
-  		ctx.lineTo(118-8, 50-4);
-  		
-   		ctx.moveTo(78, 71);
-  		ctx.lineTo(118-8, 50+5); 		
-  		
-    	        ctx.moveTo(118, 88);
-  		ctx.lineTo(118, 50+10);
-  		
-  	  	ctx.moveTo(156, 28);
-  		ctx.lineTo(118+8, 50-4);
-  		
-  		ctx.moveTo(156, 71);
-  		ctx.lineTo(118+8, 50+5);
-  		
-  		ctx.moveTo(118, 7);
-  		ctx.lineTo(118, 50-10);
-  			
-  		ctx.closePath();
-  		ctx.stroke();
-  	};
-  	
+        function loadCanvas() {
+                var canvas = document.getElementById("titleCanvas");
+                var ctx = canvas.getContext("2d");
+
+                ctx.fillStyle = "#11C7E8";
+                ctx.beginPath();
+                ctx.arc(118, 50, 10, 0, Math.PI*2, true);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.fillStyle = "#FFFFFF";
+                ctx.beginPath();
+                ctx.arc(78,  28, 6, 0, Math.PI*2, true);
+                ctx.arc(78,  71, 6, 0, Math.PI*2, true);
+                ctx.arc(118,  7, 6, 0, Math.PI*2, true);
+                ctx.arc(118, 93, 6, 0, Math.PI*2, true);
+                ctx.arc(156, 28, 6, 0, Math.PI*2, true);
+                ctx.arc(156, 71, 6, 0, Math.PI*2, true);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.strokeStyle = "#FFFFFF";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(78, 28);
+                ctx.lineTo(118-8, 50-4);
+
+                ctx.moveTo(78, 71);
+                ctx.lineTo(118-8, 50+5);
+
+                ctx.moveTo(118, 88);
+                ctx.lineTo(118, 50+10);
+
+                ctx.moveTo(156, 28);
+                ctx.lineTo(118+8, 50-4);
+
+                ctx.moveTo(156, 71);
+                ctx.lineTo(118+8, 50+5);
+
+                ctx.moveTo(118, 7);
+                ctx.lineTo(118, 50-10);
+
+                ctx.closePath();
+                ctx.stroke();
+        };
+
 // ]]>
   </script>
 </head>
@@ -92,63 +92,63 @@
     <header>
 
     </header>
-        
-	<div id="main">
-    	
-      <div id="title"> 
-	<!-- Need a snazzy image for PeerPlot -->
-	<!--
+
+        <div id="main">
+
+      <div id="title">
+        <!-- Need a snazzy image for PeerPlot -->
+        <!--
     <a class="titleLink" href="/"> <img src="img/main_title.png" alt="img/main_title.png"> </a>
    -->
     <canvas id="titleCanvas" width="235px" height="100px" style="top: 10px; position: absolute;"> </canvas>
-   
-   	<h1>PeerPlot</h1>
-   
+
+        <h1>PeerPlot</h1>
+
 <!--
-	<a class="titleLink" href="/"> <img src="{{ static_url("main_title.png") }}"> </a>
+        <a class="titleLink" href="/"> <img src="{{ static_url("main_title.png") }}"> </a>
 -->
 
-   	<!--
+        <!--
         <a class="titleLink" href="/"> <img src="{{ static_url("peerplot_title.png") }}"> </a>
-	-->
+        -->
       </div>
 
       <!-- Side bar placing and links. Refer to style.css under sideBar to see properties. -->
       <div id="sideBar">
 
-		<p><a class="sideBar" href="/"> Home </a></p>
+                <p><a class="sideBar" href="/"> Home </a></p>
 
-		<p><a class="sideBar" href="/downloads/peerplot-0.0.3.tar.gz" onClick="javascript: _gaq.push(['_trackPageview', '/peerplot-0.0.3.tar.gz']);"> Download </a></p>
+                <p><a class="sideBar" href="/downloads/peerplot-0.0.3.tar.gz" onClick="javascript: _gaq.push(['_trackPageview', '/peerplot-0.0.3.tar.gz']);"> Download </a></p>
 
-		<p><a class="sideBar" href="/"> Documentation </a></p>
-		
-		<p><a class="sideBar" href="/"> Gallery </a></p>
-				
-		<p><a class="sideBar" href="/"> Install </a></p>
+                <p><a class="sideBar" href="/"> Documentation </a></p>
 
- 		<p><a class="sideBar" href="/"> Report a bug </a></p>
+                <p><a class="sideBar" href="/"> Gallery </a></p>
 
-  		<p><a class="sideBar" href="/"> GitHub </a></p>
+                <p><a class="sideBar" href="/"> Install </a></p>
+
+                <p><a class="sideBar" href="/"> Report a bug </a></p>
+
+                <p><a class="sideBar" href="/"> GitHub </a></p>
 
       </div>
 
       <div id="content">
 
-	<div align="center">
-		<img id="mainImage" width="498px" height="579px" src="static/example.png" alt="static/example.png"/>
-	</div>
+        <div align="center">
+                <img id="mainImage" width="498px" height="579px" src="static/example.png" alt="static/example.png"/>
+        </div>
 
-	<div id="imageSource">A generated plot using matplotlib and PeerPlot</div>
+        <div id="imageSource">A generated plot using matplotlib and PeerPlot</div>
 
-	
-	<div id="textBox">
 
-	  <p class= "mainText">
+        <div id="textBox">
+
+          <p class= "mainText">
 
           </p>
 
-	      
-	      
+
+
           <h3>PeerPlot Features</h3>
 
           <ul>
@@ -173,66 +173,66 @@
           <h3>Reporting problems</h3>
 
           <p class="mainText">
-	   
+
           </p>
 
-	  <!-- 
+          <!--
           <h3>Source code</h3>
 
           <p class="mainText">
-	   
+
           </p>
 
-	  <p class="Code">
+          <p class="Code">
             git clone git://github.com/aplpy/aplpy.git APLpy
-	  </p>
-	  -->
-	  
+          </p>
+          -->
+
           <p class="mainText">
           </p>
 
-	</div>
+        </div>
 
-	<div id="crumb">
+        <div id="crumb">
           If you have any questions or comments <a class="mailto" href="mailto:brian.refsdal@gmail.com"> contact us</a>
-	</div>
+        </div>
 
       </div>
 
       <!-- Side bar placing and links. Refer to style.css under sideBar to see properties. -->
       <div id="gendiv">
-           	
-       	<p id="rightsideBarText"> Get Started Now! </p>   	
-	
-	<form id="genform" action="generate" method="post" >
-	  <input id="gensubmit" type="submit" value="{{ _("Generate Session") }}" />
+
+                <p id="rightsideBarText"> Get Started Now! </p>
+
+        <form id="genform" action="generate" method="post" >
+          <input id="gensubmit" type="submit" value="{{ _("Generate Session") }}" />
           <input type="hidden" name="next" value="{{ request.path }}"/>
           {{ xsrf_form_html() }}
-	</form>
+        </form>
 
-	<!--
-	<p class="sideBar">            
+        <!--
+        <p class="sideBar">
           Mailing list:
-	</p>
-        <a href="http://groups.google.com/group/aplpy-announce">Subscribe</a>  
-        
+        </p>
+        <a href="http://groups.google.com/group/aplpy-announce">Subscribe</a>
+
         <br>
         <br>
-	-->
-        
-	<!--
-        <p class="sideBar">            
+        -->
+
+        <!--
+        <p class="sideBar">
           Twitter feed:
         </p>
-        
-	<a href="https://twitter.com/PeerPlot"><img src="images/twitter-gray.png"></a>
-	-->
-	<br>
-	<br>
 
-	<br />
-    
-      </div>        
+        <a href="https://twitter.com/PeerPlot"><img src="images/twitter-gray.png"></a>
+        -->
+        <br>
+        <br>
+
+        <br />
+
+      </div>
     </div>
 
     <footer>

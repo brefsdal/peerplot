@@ -8,18 +8,18 @@ body {
 }
 
 div.cursor {
-    cursor: crosshair; 
-    height: 0px; 
-    width: 0px; 
-    border: none; 
+    cursor: crosshair;
+    height: 0px;
+    width: 0px;
+    border: none;
     position: absolute;
 }
 
 div.zoom {
-    height: 0px; 
+    height: 0px;
     width: 0px;
-    border: 1px dashed grey; 
-    position: absolute; 
+    border: 1px dashed grey;
+    position: absolute;
     left: 0px;
     top: 0px;
 }
@@ -146,7 +146,7 @@ td.button {
     visibility: hidden;
 }
 
-label, input { 
+label, input {
     display:block;
 }
 
@@ -156,7 +156,7 @@ input.text {
     padding: .4em;
 }
 
-fieldset { 
+fieldset {
     padding:0;
     border:0;
     margin-top:25px;
