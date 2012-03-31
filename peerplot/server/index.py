@@ -361,13 +361,15 @@ class SessionHandler(RequestHandler):
     def write_error(self, status_code, **kwargs):
         token = kwargs.pop('token', '')
         if status_code == 404:
+            message = "The session '%(token)s' is not found, try generating a new session" % {
+                "token": token
+                }
             self.finish("<html><title>%(code)d: %(message)s</title>"
                         "<body>%(code)d: %(message)s</body></html>" % {
                     "code": status_code,
-                    "message": "The session '$(token)s' you are looking for is not found" % {
-                        "token": token
-                        }
+                    "message": message
                     })
+            return
         RequestHandler.write_error(self, status_code, **kwargs)
 
 
@@ -397,6 +399,7 @@ class GenerateHandler(RequestHandler):
             count += 1
             if count > 5:
                 self.send_error(403)
+                return
 
         _sessions[hashid] = Session(hashid)
 
@@ -412,6 +415,7 @@ class GenerateHandler(RequestHandler):
                     "code": status_code,
                     "message": "PeerPlot failed to create a session, please try again later"
                     })
+            return
         RequestHandler.write_error(self, status_code, **kwargs)
 
 
