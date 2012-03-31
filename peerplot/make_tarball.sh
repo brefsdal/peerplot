@@ -1,6 +1,6 @@
 #!/bin/sh
 
-VERSION="0.0.6"
+VERSION="0.0.7"
 FILE="peerplot-$VERSION"
 
 mkdir -p $FILE
