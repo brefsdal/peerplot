@@ -10,7 +10,7 @@
         plotOffset = { left: 0, right: 0, top: 0, bottom: 0},
         canvasWidth = 0, canvasHeight = 0,
         plotWidth = 0, enabled = true, plotHeight = 0,
-        host = "peerplot.dce.harvard.edu", port = 80, session = "brian",
+        host = "localhost", port = 80, session = "",
         plotSocket = false, isPlotting = false,
         lastFrame = "var frame_header = false;",
         plot = this, cursor_info = 0;
@@ -134,29 +134,21 @@
                 var pageXLeft = (pageX - offsetLeft) + "px";
                 // IV quad
                 if (xDelta > 0 && yDelta > 0) {
-                    //zdiv.style.top = (startY - (plotCanvas.offsetTop + plotCanvas.offsetParent.offsetTop)) + "px";
-                    //zdiv.style.left = (startX - (plotCanvas.offsetLeft + plotCanvas.offsetParent.offsetLeft)) + "px";
                     zdiv.style.top = startYTop;
                     zdiv.style.left = startXLeft;
                 }
                 // II quad
                 if (xDelta < 0 && yDelta < 0) {
-                    //zdiv.style.top = (pageY - (plotCanvas.offsetTop + plotCanvas.offsetParent.offsetTop)) + "px";
-                    //zdiv.style.left = (pageX - (plotCanvas.offsetLeft + plotCanvas.offsetParent.offsetLeft)) + "px";
                     zdiv.style.top = pageYTop;
                     zdiv.style.left = pageXLeft;
                 }
                 // I quad
                 if (xDelta > 0 && yDelta < 0) {
-                    //zdiv.style.top = (pageY - (plotCanvas.offsetTop + plotCanvas.offsetParent.offsetTop)) + "px";
-                    //zdiv.style.left = (startX - (plotCanvas.offsetLeft + plotCanvas.offsetParent.offsetLeft)) + "px";
                     zdiv.style.top = pageYTop;
                     zdiv.style.left = startXLeft;
                 }
                 // III quad
                 if (xDelta < 0 && yDelta > 0) {
-                    //zdiv.style.top = (startY - (plotCanvas.offsetTop + plotCanvas.offsetParent.offsetTop)) + "px";
-                    //zdiv.style.left = (pageX - (plotCanvas.offsetLeft + plotCanvas.offsetParent.offsetLeft)) + "px";
                     zdiv.style.top = startYTop;
                     zdiv.style.left = pageXLeft;
                 }
@@ -374,16 +366,9 @@
                 var xScale = w / native_w[0];
                 var yScale = h / native_h[0];
                 resize_canvas(0, w, h);
-                // no figure active for this canvas so do a purely client side resize
-                //allow_resize = false;
-                //canvii[id].width = canvii[id].width;
-                // clear the canvas and reset scale factor before client size redraw
                 document.getElementById('status').innerText = "Client side resize mode";
                 ctx.scale(xScale, yScale);
-                // needs to be done after resize_canvas, but this loses canvii[id].width/height so extra vars needed
                 drawFrame(ctx);
-                // the frame we draw may contain resize commands. Ignore these in client only mode hence the bracketing allow_resize directives.
-                //allow_resize = true;
             }
         }
 
@@ -414,14 +399,6 @@
 
         function onDrop(e) {
             if (e.preventDefault) { e.preventDefault(); }
-            // stop Firefox triggering a page change event
-            //top_e = e;
-            var dt= e.dataTransfer;
-            console.log(dt);
-            //var el_id = e.dataTransfer.getData('Text');
-
-            // FIXME: stop plotting when canvas is resized??
-            //stopPlotting();
             return false;
         }
 

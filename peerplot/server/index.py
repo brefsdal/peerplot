@@ -40,7 +40,7 @@ from tornado.web import RequestHandler, StaticFileHandler
 from tornado.options import define, options
 
 TOKEN_SIZE = 6
-HOST='peerplot.dce.harvard.edu'
+HOST='localhost'
 PORT=80
 SECRET=str(base64.b64encode(hashlib.sha256(str(random.random())).digest()))
 

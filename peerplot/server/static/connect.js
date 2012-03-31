@@ -3,9 +3,9 @@
         socket: null,
         init: function (options) {
             this.options = $.extend({
-                host: "peerplot.dce.harvard.edu",
+                host: "localhost",
                 port: 80,
-                session: "brian"
+                session: ""
             }, options);
             var addr = 'ws://' +
                 this.options.host + ':' +
@@ -14,8 +14,6 @@
             if (this.socket) {
                 this.socket.close();
             }
-            //this.socket = ("WebSocket" in window) ? new WebSocket(addr) :
-            //    new MozWebSocket(addr);
             if ("WebSocket" in window) {
                 this.socket = new WebSocket(addr);
             } else {

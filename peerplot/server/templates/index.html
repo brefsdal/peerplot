@@ -32,60 +32,7 @@
        for optimal performance, create your own custom Modernizr build: www.modernizr.com/download/ -->
   <script src="static/modernizr-2.0.6.min.js"></script>
 
-  <script type="text/javascript">
-// <![CDATA[
-
-        function loadCanvas() {
-                var canvas = document.getElementById("titleCanvas");
-                var ctx = canvas.getContext("2d");
-
-                ctx.fillStyle = "#11C7E8";
-                ctx.beginPath();
-                ctx.arc(118, 50, 10, 0, Math.PI*2, true);
-                ctx.closePath();
-                ctx.fill();
-
-                ctx.fillStyle = "#FFFFFF";
-                ctx.beginPath();
-                ctx.arc(78,  28, 6, 0, Math.PI*2, true);
-                ctx.arc(78,  71, 6, 0, Math.PI*2, true);
-                ctx.arc(118,  7, 6, 0, Math.PI*2, true);
-                ctx.arc(118, 93, 6, 0, Math.PI*2, true);
-                ctx.arc(156, 28, 6, 0, Math.PI*2, true);
-                ctx.arc(156, 71, 6, 0, Math.PI*2, true);
-                ctx.closePath();
-                ctx.fill();
-
-                ctx.strokeStyle = "#FFFFFF";
-                ctx.lineWidth = 2;
-                ctx.beginPath();
-                ctx.moveTo(78, 28);
-                ctx.lineTo(118-8, 50-4);
-
-                ctx.moveTo(78, 71);
-                ctx.lineTo(118-8, 50+5);
-
-                ctx.moveTo(118, 88);
-                ctx.lineTo(118, 50+10);
-
-                ctx.moveTo(156, 28);
-                ctx.lineTo(118+8, 50-4);
-
-                ctx.moveTo(156, 71);
-                ctx.lineTo(118+8, 50+5);
-
-                ctx.moveTo(118, 7);
-                ctx.lineTo(118, 50-10);
-
-                ctx.closePath();
-                ctx.stroke();
-        };
-
-// ]]>
-  </script>
 </head>
-
-<!--<body onload='loadCanvas(); return false;'> -->
   <body>
 
   <div id="container">
@@ -96,21 +43,9 @@
         <div id="main">
 
       <div id="title">
-        <!-- Need a snazzy image for PeerPlot -->
-        <!--
-    <a class="titleLink" href="/"> <img src="img/main_title.png" alt="img/main_title.png"> </a>
-   -->
     <canvas id="titleCanvas" width="235px" height="100px" style="top: 10px; position: absolute;"> </canvas>
 
         <h1>PeerPlot</h1>
-
-<!--
-        <a class="titleLink" href="/"> <img src="{{ static_url("main_title.png") }}"> </a>
--->
-
-        <!--
-        <a class="titleLink" href="/"> <img src="{{ static_url("peerplot_title.png") }}"> </a>
-        -->
       </div>
 
       <!-- Side bar placing and links. Refer to style.css under sideBar to see properties. -->
@@ -176,18 +111,6 @@
 
           </p>
 
-          <!--
-          <h3>Source code</h3>
-
-          <p class="mainText">
-
-          </p>
-
-          <p class="Code">
-            git clone git://github.com/aplpy/aplpy.git APLpy
-          </p>
-          -->
-
           <p class="mainText">
           </p>
 
@@ -210,23 +133,6 @@
           {{ xsrf_form_html() }}
         </form>
 
-        <!--
-        <p class="sideBar">
-          Mailing list:
-        </p>
-        <a href="http://groups.google.com/group/aplpy-announce">Subscribe</a>
-
-        <br>
-        <br>
-        -->
-
-        <!--
-        <p class="sideBar">
-          Twitter feed:
-        </p>
-
-        <a href="https://twitter.com/PeerPlot"><img src="images/twitter-gray.png"></a>
-        -->
         <br>
         <br>
 
