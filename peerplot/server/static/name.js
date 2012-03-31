@@ -1,4 +1,12 @@
 (function() {
+
+    /*
+      NameDialog is based off the jQuery UI Modal Form example
+      http://jqueryui.com/demos/dialog/#modal-form
+
+      It uses the functions updateTips(), checkLength(), and checkRegexp() to
+      validate user input.
+     */
     NameDialog = {
         init: function (options) {
             this.options = $.extend({

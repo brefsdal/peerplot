@@ -581,7 +581,7 @@
 
         // Contributed by Charles Blackwell
         // http://stackoverflow.com/questions/8208043/display-google-map-on-hover-link-or-text
-        if (window.Event) {
+        if (window.Event && document.captureEvents) {
             document.captureEvents(Event.MOUSEMOVE);
         }
         document.onmousemove = slideSize;

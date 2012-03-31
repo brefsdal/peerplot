@@ -83,7 +83,11 @@ def update_user_list(session):
 
 
 class Session(object):
-
+    """
+    Session object encapsulates a generated PeerPlot meeting as a collection
+    of WebSocket connections.  One connection is considered the administrator.
+    This privilege can be passed from connection to connection.
+    """
     def _get_names(self):
         names = []
         for connection in self.connections:
@@ -117,6 +121,9 @@ _sessions = { 'brian' : Session('brian'),
 
 
 class Application(tornado.web.Application):
+    """
+    Main Tornado web framework object.  Associates URLs to handlers.
+    """
     def __init__(self):
         handlers = [
             (r"/", MainHandler),
@@ -139,6 +146,11 @@ class Application(tornado.web.Application):
 
 
 class ManagerSocketHandler(WebSocketHandler):
+    """
+    A WebSocket handler to manage user list and administrator updates per session
+
+    Browser --> web server --> Browser
+    """
 
     def allow_draft76(self):
         return True
@@ -192,6 +204,11 @@ class ManagerSocketHandler(WebSocketHandler):
 
         update_user_list(session)
 
+        # If a user (an admin by rule) is the last to leave, discard the session after he disconnects
+        if not managers:
+            logging.info("[%s] last user '%s' has left the session, cleaning up..."  % (session.hashid, str(self.connection.name)))
+            _sessions.pop(session)
+
 
     def on_message(self, message):
         session = self.get_session()
@@ -231,6 +248,13 @@ class ManagerSocketHandler(WebSocketHandler):
 
 
 class APISocketHandler(WebSocketHandler):
+    """
+    A WebSocket handler to manage the plotting API functions between
+    the browser and the web server.
+
+    Browser --> web server --> Matplotlib
+    """
+
 
     def allow_draft76(self):
         return True
@@ -264,6 +288,17 @@ class APISocketHandler(WebSocketHandler):
 
 
 class ClientSocketHandler(WebSocketHandler):
+    """
+    A WebSocket handler to connect the web server to the Matplotlib
+    client.  Implements the broadcast to all connected browser clients
+    per session.
+
+                              --> browser 1
+                              |
+    Matplotlib --> web server --> browser 2
+                              |
+                              --> browser i
+    """
 
     def get_session(self):
         token = parse_token('client', self.request.uri)
@@ -311,6 +346,9 @@ class ClientSocketHandler(WebSocketHandler):
 
 
 class SessionHandler(RequestHandler):
+    """
+    Main HTTP handler for the PeerPlot session pages
+    """
 
     def get(self):
         script = str(self.request.uri).strip()
@@ -318,28 +356,69 @@ class SessionHandler(RequestHandler):
         if _sessions.has_key(token):
             self.render("plot.html", session=token, server_ip=options.host, server_port=options.port)
         else:
-            self.send_error(404)
+            self.send_error(404, token=token)
+
+    def write_error(self, status_code, **kwargs):
+        token = kwargs.pop('token', '')
+        if status_code == 404:
+            self.finish("<html><title>%(code)d: %(message)s</title>"
+                        "<body>%(code)d: %(message)s</body></html>" % {
+                    "code": status_code,
+                    "message": "The session '$(token)s' you are looking for is not found" % {
+                        "token": token
+                        }
+                    })
+        RequestHandler.write_error(self, status_code, **kwargs)
 
 
 class MainHandler(RequestHandler):
+    """
+    Main HTTP handler for the PeerPlot home page
+    """
 
     def get(self):
         self.render("index.html")
 
 
 class GenerateHandler(RequestHandler):
+    """
+    HTTP handler to generate a new PeerPlot session as a 6 character hash
+    redirects the user to the new URL.
+    """
 
     def post(self):
-        # FIXME: What is the strategy for collisions?
         hashid = generate_token()  # generate string tokens
+
+        # What if hashid already exists in _sessions?
+        # Presence of a hashing collision
+        count = 0
+        while hashid in _sessions:
+            hashid = generate_token()
+            count += 1
+            if count > 5:
+                self.send_error(403)
+
         _sessions[hashid] = Session(hashid)
 
         url = 'http://' + options.host + ':' + str(options.port) + '/' + hashid
         self.redirect(url)
 
+    def write_error(self, status_code, **kwargs):
+        if status_code == 403:
+            script = str(self.request.uri).strip()
+            token = script.strip('/')
+            self.finish("<html><title>%(code)d: %(message)s</title>"
+                        "<body>%(code)d: %(message)s</body></html>" % {
+                    "code": status_code,
+                    "message": "PeerPlot failed to create a session, please try again later"
+                    })
+        RequestHandler.write_error(self, status_code, **kwargs)
+
 
 class Connection(object):
-
+    """
+    A class to encapsulate a WebSocket connection with an associated ID and username
+    """
     def __init__(self, address):
         self.name = None
         self.id = str(uuid.uuid4())
