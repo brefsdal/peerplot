@@ -207,7 +207,7 @@ class ManagerSocketHandler(WebSocketHandler):
         # If a user (an admin by rule) is the last to leave, discard the session after he disconnects
         if not managers:
             logging.info("[%s] last user '%s' has left the session, cleaning up..."  % (session.hashid, str(self.connection.name)))
-            _sessions.pop(session)
+            _sessions.pop(session, None)
 
 
     def on_message(self, message):

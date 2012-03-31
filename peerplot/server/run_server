@@ -1,0 +1,5 @@
+#!/bin/bash
+
+DATE=`date '+%F-%T'`
+
+nohup sudo python index.py --host=peerplot.dce.harvard.edu >server-$DATE.log 2>&1
