@@ -7,7 +7,7 @@ mkdir -p $FILE
 mkdir -p "$FILE/peerplot"
 mkdir -p "$FILE/examples"
 
-cp -f README.txt $FILE
+cp -f ../README.txt $FILE
 sed "s/%VERSION%/${VERSION}/g" <setup.py >$FILE/setup.py
 cp -f examples/plot.py $FILE/examples
 sed "s/%VERSION%/${VERSION}/g" <peerplot/__init__.py >$FILE/peerplot/__init__.py
