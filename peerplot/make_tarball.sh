@@ -18,6 +18,10 @@ cp -f peerplot/rendererh5canvas.py $FILE/peerplot
 
 tar -cf "$FILE.tar" $FILE
 gzip "$FILE.tar"
+
+if [ ! -d server/downloads ]; then
+    mkdir -p "server/downloads"
+fi
 mv "$FILE.tar.gz" server/downloads
 
 rm -rf $FILE
